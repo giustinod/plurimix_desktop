@@ -6,5 +6,6 @@ public class PrintMeta {
     int numberCopies;
 
     String fileType;
+    String fileName;
     String file;
 }

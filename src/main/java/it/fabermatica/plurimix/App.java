@@ -30,7 +30,6 @@ import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
-import java.util.Base64;
 import java.util.Collections;
 
 import com.google.gson.Gson;
@@ -79,9 +78,9 @@ public class App extends WebSocketServer {
     try {
       PrintMeta printMeta = gson.fromJson(message, PrintMeta.class);
       System.out.println(printMeta);
-      String decodedString = this.getFileText(printMeta.file);
-      broadcast(decodedString);
-      System.out.println(conn + ": " + decodedString);
+      new FileDecoder(printMeta.fileName, printMeta.file);
+      broadcast(printMeta.fileName);
+      System.out.println(conn + ": " + printMeta.fileName);
     } catch (Exception e) {
       broadcast(message);
       System.out.println(conn + ": " + message);
@@ -129,11 +128,5 @@ public class App extends WebSocketServer {
     System.out.println("Server started!");
     setConnectionLostTimeout(0);
     setConnectionLostTimeout(100);
-  }
-
-  private String getFileText(String encodedFile) {
-    byte[] decodedByte = Base64.getDecoder().decode(encodedFile);
-    String decodedFileText = new String(decodedByte);
-    return decodedFileText;
   }
 }
