@@ -44,6 +44,7 @@ import org.java_websocket.server.WebSocketServer;
  * A simple WebSocketServer implementation. Keeps track of a "chatroom".
  */
 public class App extends WebSocketServer {
+  static Gson gson = new Gson();
 
   public App(int port) throws UnknownHostException {
     super(new InetSocketAddress(port));
@@ -64,6 +65,10 @@ public class App extends WebSocketServer {
         .getResourceDescriptor()); // This method sends a message to all clients connected
     System.out.println(
         conn.getRemoteSocketAddress().getAddress().getHostAddress() + " entered the room!");
+
+    String[] printers = Printer.getPrinters();
+    Event<String[]> initPrinterEvent = new Event<String[]>("INIT_PRINTER", printers);
+    broadcast(gson.toJson(initPrinterEvent));
   }
 
   @Override
@@ -74,7 +79,6 @@ public class App extends WebSocketServer {
 
   @Override
   public void onMessage(WebSocket conn, String message) {
-    Gson gson = new Gson();
     try {
       PrintMeta printMeta = gson.fromJson(message, PrintMeta.class);
       System.out.println(printMeta);
