@@ -31,6 +31,9 @@ import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.util.Collections;
+
+import com.google.gson.Gson;
+
 import org.java_websocket.WebSocket;
 import org.java_websocket.drafts.Draft;
 import org.java_websocket.drafts.Draft_6455;
@@ -56,9 +59,9 @@ public class App extends WebSocketServer {
 
   @Override
   public void onOpen(WebSocket conn, ClientHandshake handshake) {
-    conn.send("Welcome to the server!"); //This method sends a message to the new client
+    conn.send("Welcome to the server!"); // This method sends a message to the new client
     broadcast("new connection: " + handshake
-        .getResourceDescriptor()); //This method sends a message to all clients connected
+        .getResourceDescriptor()); // This method sends a message to all clients connected
     System.out.println(
         conn.getRemoteSocketAddress().getAddress().getHostAddress() + " entered the room!");
   }
@@ -71,8 +74,16 @@ public class App extends WebSocketServer {
 
   @Override
   public void onMessage(WebSocket conn, String message) {
-    broadcast(message);
-    System.out.println(conn + ": " + message);
+    Gson gson = new Gson();
+    try {
+      PrintMeta printMeta = gson.fromJson(message, PrintMeta.class);
+      System.out.println(printMeta);
+      broadcast(printMeta.file);
+      System.out.println(conn + ": " + printMeta);
+    } catch (Exception e) {
+      broadcast(message);
+      System.out.println(conn + ": " + message);
+    }
   }
 
   @Override
@@ -106,7 +117,8 @@ public class App extends WebSocketServer {
   public void onError(WebSocket conn, Exception ex) {
     ex.printStackTrace();
     if (conn != null) {
-      // some errors like port binding failed may not be assignable to a specific websocket
+      // some errors like port binding failed may not be assignable to a specific
+      // websocket
     }
   }
 
