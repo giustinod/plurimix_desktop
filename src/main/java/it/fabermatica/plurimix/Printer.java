@@ -27,9 +27,7 @@ public class Printer {
     }
 
     private PrintService getPrinter(String name) {
-        PrintService[] printServices = PrintServiceLookup.lookupPrintServices(DocFlavor.SERVICE_FORMATTED.PAGEABLE,
-                null);
-        for (PrintService printer : printServices)
+        for (PrintService printer : this.printers)
             if (printer.getName().trim().equals(name))
                 return printer;
         return null;
