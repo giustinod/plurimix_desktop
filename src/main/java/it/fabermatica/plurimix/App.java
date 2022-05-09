@@ -66,7 +66,8 @@ public class App extends WebSocketServer {
     System.out.println(
         conn.getRemoteSocketAddress().getAddress().getHostAddress() + " entered the room!");
 
-    String[] printers = Printer.getPrinters();
+    Printer printer = new Printer();
+    String[] printers = printer.getPrinterNames();
     Event<String[]> initPrinterEvent = new Event<String[]>("INIT_PRINTER", printers);
     broadcast(gson.toJson(initPrinterEvent));
   }
