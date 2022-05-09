@@ -1,11 +1,18 @@
 package it.fabermatica.plurimix;
 
 public class PrintMeta {
-    String paperOrientation;
-    String paperFormat;
+    Orientation paperOrientation; // O, V
+    PaperFormat paperFormat; // A4, A5
     int numberCopies;
 
-    String fileType;
     String fileName;
     String file;
+}
+
+enum Orientation {
+    HORIZONTAL, VERTICAL
+}
+
+enum PaperFormat {
+    A4, A5
 }
