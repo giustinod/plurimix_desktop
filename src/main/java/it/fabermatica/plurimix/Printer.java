@@ -1,16 +1,13 @@
 package it.fabermatica.plurimix;
 
-import java.io.FileInputStream;
+import java.awt.print.PrinterJob;
+import java.io.File;
 
-import javax.print.Doc;
-import javax.print.DocFlavor;
-import javax.print.DocPrintJob;
 import javax.print.PrintService;
 import javax.print.PrintServiceLookup;
-import javax.print.SimpleDoc;
-import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.PrintRequestAttributeSet;
-import javax.print.attribute.standard.MediaSizeName;
+
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.printing.PDFPageable;
 
 public class Printer {
     private PrintService[] printers;
@@ -34,22 +31,16 @@ public class Printer {
     }
 
     public void print() {
-        // DocFlavor flavor = DocFlavor.BYTE_ARRAY.PDF;
-        PrintRequestAttributeSet printAttributes = new HashPrintRequestAttributeSet();
-        printAttributes.add(MediaSizeName.ISO_A4);
-        PrintService printer = this.getPrinter("HP075EF5");
-
-        if (printer == null)
-            return;
-
-        DocPrintJob printJob = printer.createPrintJob();
-
         try {
-            FileInputStream inputStream = new FileInputStream("./assets/file/test.pdf");
-            Doc pdfFile = new SimpleDoc(inputStream, DocFlavor.SERVICE_FORMATTED.PAGEABLE, null);
-            printJob.print(pdfFile, printAttributes);
-            // System.out.println("print");
-            inputStream.close();
+            PDDocument document = PDDocument.load(new File("./assets/file/test.pdf"));
+            PrintService printer = getPrinter("HP075EF5");
+            if (printer == null)
+                return;
+
+            PrinterJob printJob = PrinterJob.getPrinterJob();
+            printJob.setPageable(new PDFPageable(document));
+            printJob.setPrintService(printer);
+            printJob.print();
         } catch (Exception e) {
             e.printStackTrace();
         }
