@@ -1,13 +1,20 @@
 package it.fabermatica.plurimix;
 
+import java.awt.print.PageFormat;
 import java.awt.print.PrinterJob;
 import java.io.File;
 
 import javax.print.PrintService;
 import javax.print.PrintServiceLookup;
+import javax.print.attribute.*;
+import javax.print.attribute.standard.Chromaticity;
+import javax.print.attribute.standard.Copies;
+import javax.swing.text.AttributeSet.ColorAttribute;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.printing.PDFPageable;
+import org.apache.pdfbox.printing.Orientation;
+import org.apache.pdfbox.printing.PDFPrintable;
+import org.apache.pdfbox.printing.Scaling;
 
 public class Printer {
     private PrintService[] printers;
@@ -30,24 +37,27 @@ public class Printer {
         return null;
     }
 
-    public void print() {
+    public void print(File inputFile) {
         try {
-            PDDocument document = PDDocument.load(new File("./assets/file/test.pdf"));
+            PDDocument document = PDDocument.load(inputFile);
+            PrintRequestAttributeSet printerAttributes = new HashPrintRequestAttributeSet();
+            printerAttributes.add(Chromaticity.COLOR);
+            printerAttributes.add(new Copies(12));
+
+            PageFormat pageFormat = new PageFormat();
+            pageFormat.setOrientation(PageFormat.LANDSCAPE);
+
+            PDFPrintable printable = new PDFPrintable(document, Scaling.SCALE_TO_FIT);
             PrintService printer = getPrinter("HP075EF5");
             if (printer == null)
                 return;
 
             PrinterJob printJob = PrinterJob.getPrinterJob();
-            printJob.setPageable(new PDFPageable(document));
+            printJob.setPrintable(printable, pageFormat);
             printJob.setPrintService(printer);
-            printJob.print();
+            // printJob.print(printerAttributes); // questo fa partire la stampa
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public static void main(String[] args) {
-        Printer printer = new Printer();
-        printer.print();
     }
 }
