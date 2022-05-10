@@ -5,16 +5,22 @@ import java.io.FileOutputStream;
 import java.util.Base64;
 
 public class FileDecoder {
+    File file;
+
     FileDecoder(String name, String fileString) {
-        File pdfFile = new File("assets/file", name);
+        file = new File("assets/file", name);
         try {
-            pdfFile.createNewFile();
-            FileOutputStream stream = new FileOutputStream(pdfFile);
+            file.createNewFile();
+            FileOutputStream stream = new FileOutputStream(file);
             byte[] decodedByte = Base64.getDecoder().decode(fileString);
             stream.write(decodedByte);
             stream.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public File getFile() {
+        return file;
     }
 }
