@@ -47,8 +47,8 @@ public class Printer {
     }
 
     public void print(File inputFile) throws IOException, PrinterException {
-        // PrintService printer = this.getPrinter("Microsoft Print to PDF");
-        PrintService printer = this.getPrinter("PDF24");
+        PrintService printer = this.getPrinter("Microsoft Print to PDF");
+        // PrintService printer = this.getPrinter("PDF24");
         PDDocument document = PDDocument.load(inputFile);
 
         // proprietà di stampa
