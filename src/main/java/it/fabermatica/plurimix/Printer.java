@@ -43,10 +43,10 @@ public class Printer {
     public static void main(String[] args) throws IOException, PrinterException {
         File newFile = new File("assets/file", "Cartellini.pdf");
         Printer printer = new Printer();
-        printer.simplePrint(newFile);
+        printer.print(newFile);
     }
 
-    public void simplePrint(File inputFile) throws IOException, PrinterException {
+    public void print(File inputFile) throws IOException, PrinterException {
         // PrintService printer = this.getPrinter("Microsoft Print to PDF");
         PrintService printer = this.getPrinter("PDF24");
         PDDocument document = PDDocument.load(inputFile);
