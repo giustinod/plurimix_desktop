@@ -1,8 +1,12 @@
 package it.fabermatica.plurimix;
 
+import java.awt.print.Book;
 import java.awt.print.PageFormat;
+import java.awt.print.Paper;
+import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.io.File;
+import java.io.IOException;
 
 import javax.print.PrintService;
 import javax.print.PrintServiceLookup;
@@ -36,18 +40,55 @@ public class Printer {
         return null;
     }
 
+    public static void main(String[] args) throws IOException, PrinterException {
+        File newFile = new File("assets/file", "Cartellini.pdf");
+        Printer printer = new Printer();
+        printer.simplePrint(newFile);
+    }
+
+    public void simplePrint(File inputFile) throws IOException, PrinterException {
+        // PrintService printer = this.getPrinter("Microsoft Print to PDF");
+        PrintService printer = this.getPrinter("PDF24");
+        PDDocument document = PDDocument.load(inputFile);
+
+        // proprietà di stampa
+        PrintRequestAttributeSet printerAttributes = new HashPrintRequestAttributeSet();
+        printerAttributes.add(Chromaticity.COLOR);
+        printerAttributes.add(new Copies(3));
+
+        // foglio senza margini aggiunti
+        Paper paper = PrinterJob.getPrinterJob().defaultPage().getPaper();
+        paper.setImageableArea(0, 0, paper.getWidth(), paper.getHeight());
+
+        // formato di stampa
+        PageFormat pageFormat = new PageFormat();
+        pageFormat.setPaper(paper);
+        pageFormat.setOrientation(PageFormat.PORTRAIT);
+
+        // applico il formato al pdf
+        Book book = new Book();
+        book.append(new PDFPrintable(document, Scaling.SCALE_TO_FIT), pageFormat,
+                document.getNumberOfPages());
+
+        // creo la coda di stampa
+        PrinterJob job = PrinterJob.getPrinterJob();
+        job.setPrintService(printer);
+        job.setPageable(book);
+        job.print(printerAttributes);
+    }
+
     public void print(File inputFile) {
         try {
             PDDocument document = PDDocument.load(inputFile);
             PrintRequestAttributeSet printerAttributes = new HashPrintRequestAttributeSet();
             printerAttributes.add(Chromaticity.COLOR);
-            printerAttributes.add(new Copies(1));
+            printerAttributes.add(new Copies(2));
 
             PageFormat pageFormat = new PageFormat();
             pageFormat.setOrientation(PageFormat.PORTRAIT);
 
             PDFPrintable printable = new PDFPrintable(document, Scaling.SCALE_TO_FIT);
-            PrintService printer = getPrinter("HP075EF5");
+            PrintService printer = getPrinter("PDF24");
             if (printer == null)
                 return;
 
