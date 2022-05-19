@@ -76,28 +76,4 @@ public class Printer {
         job.setPageable(book);
         job.print(printerAttributes);
     }
-
-    public void print(File inputFile) {
-        try {
-            PDDocument document = PDDocument.load(inputFile);
-            PrintRequestAttributeSet printerAttributes = new HashPrintRequestAttributeSet();
-            printerAttributes.add(Chromaticity.COLOR);
-            printerAttributes.add(new Copies(2));
-
-            PageFormat pageFormat = new PageFormat();
-            pageFormat.setOrientation(PageFormat.PORTRAIT);
-
-            PDFPrintable printable = new PDFPrintable(document, Scaling.SCALE_TO_FIT);
-            PrintService printer = getPrinter("PDF24");
-            if (printer == null)
-                return;
-
-            PrinterJob printJob = PrinterJob.getPrinterJob();
-            printJob.setPrintable(printable, pageFormat);
-            printJob.setPrintService(printer);
-            printJob.print(printerAttributes); // questo fa partire la stampa
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }
