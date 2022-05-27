@@ -1,7 +1,9 @@
 package it.fabermatica.plurimix;
 
+import com.google.gson.annotations.SerializedName;
+
 public class PrintMeta {
-    Orientation paperOrientation; // O, V
+    Orientation paperOrientation; // P (Portrait), L (Landscape)
     PaperFormat paperFormat; // A4, A5
     int numberCopies;
 
@@ -9,10 +11,23 @@ public class PrintMeta {
     String file;
 }
 
-enum Orientation {
-    HORIZONTAL, VERTICAL
-}
-
 enum PaperFormat {
     A4, A5
+}
+
+enum Orientation {
+    @SerializedName("P")
+    PORTRAIT(0),
+    @SerializedName("L")
+    LANDSCAPE(1);
+
+    private final int value;
+
+    public int getValue() {
+        return value;
+    }
+
+    private Orientation(int value) {
+        this.value = value;
+    }
 }

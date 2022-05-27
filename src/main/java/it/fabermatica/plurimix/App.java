@@ -83,12 +83,11 @@ public class App extends WebSocketServer {
     try {
       PrintMeta printMeta = gson.fromJson(message, PrintMeta.class);
       System.out.println(printMeta.paperOrientation);
-      System.out.println(printMeta.fileName);
-      FileDecoder decoder = new FileDecoder(printMeta.fileName, printMeta.file);
-      Printer printer = new Printer();
-      printer.print(decoder.getFile());
-      broadcast(printMeta.fileName);
-      System.out.println(conn + ": " + printMeta.fileName);
+      // FileDecoder decoder = new FileDecoder(printMeta.fileName, printMeta.file);
+      // Printer printer = new Printer();
+      // printer.print(decoder.getFile());
+      // broadcast(printMeta.fileName);
+      System.out.println(conn + ": " + message);
     } catch (Exception e) {
       e.printStackTrace();
     }
